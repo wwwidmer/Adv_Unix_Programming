@@ -1,5 +1,5 @@
 myname:
-	cc -g -o myname.p homework-one.c
+	cc -g -o myname.o homework-one.c
 
 mylseek:
 	cc -std=c11 -g -o mylseek.o mylseek.c
@@ -13,12 +13,7 @@ myhier:
 	cc -std=c11 -g -o myhier.o myhierachy.c
 
 test:
-	touch "foo"
-	touch "bar"
-	./mystat.o foo
-	./mystat.o bar
-	rm foo
-	rm bar
+	./myhier.o ../projects
 
 clean:
 	rm $(RM) *.o *~ "foo" "bar"
