@@ -10,12 +10,13 @@ mystat:
 	cc -std=c11 -g -o mystat.o mystat.c
 
 myhier:
-	cc -std=c11 -g -o myhier.o myhierachy.c
+	cc -std=c11 -g  myhierarchy.h
+	cc -std=c11 -g -o myhier.o myhierarchy.c
 
 test:
 	./myhier.o ../projects
 
 clean:
-	rm $(RM) *.o *~ "foo" "bar"
+	rm $(RM) *.o *~ *.gch "foo" "bar"
 
 
