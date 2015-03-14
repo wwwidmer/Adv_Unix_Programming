@@ -12,6 +12,13 @@ mystat:
 myhier:
 	cc -std=c11 -g  myhierarchy.h
 	cc -std=c11 -g -o myhier.o myhierarchy.c
+findusers:
+	cc -std=c11 -g -o findusers.o findusers.c
+supplementGID:
+	cc -std=c11 -g -o sGID.o supplementGID.c
+homework:
+	make findusers
+	make supplementGID
 
 test:
 	./myhier.o ../projects
