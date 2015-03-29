@@ -1,5 +1,5 @@
 myname:
-	cc -g -o myname.o homework-one.c
+	cc -g -o myname.o homework1.c
 
 mylseek:
 	cc -std=c11 -g -o mylseek.o mylseek.c
@@ -16,10 +16,15 @@ findusers:
 	cc -std=c11 -g -o findusers.o findusers.c
 supplementGID:
 	cc -std=c11 -g -o sGID.o supplementGID.c
-homework:
-	make findusers
-	make supplementGID
+homework6:
+	cc -Wdiv-by-zero -o hw6.o homework6.c
+homework7:
+	cc -o hw7.o homework7.c
+homework8:
+	gcc -pthread -o hw8.o homework8.c
 
+dohomework:
+	make homework6
 test:
 	./myhier.o ../projects
 
