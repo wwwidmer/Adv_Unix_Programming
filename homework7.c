@@ -26,21 +26,49 @@
 // sigprocmask(sigblock, newset,oldset)
 // sigsuspend(waitmask)
 
-
+#include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-
+static void handler(int);
 
 int main(int argc,char *argv[]){
+  sigset_t newset, oldset, waitset;
 
-  return 0;
+  //  printf("Starting...");
+  printf("Starting\n");
+  
+  if (signal(SIGINT, handler) == SIG_ERR)
+    printf("Signal Error..."); 
+
+  sigemptyset(&waitset);
+  sigaddset(&waitset, SIGUSR1);
+  sigemptyset(&newset);
+  sigaddset(&newset,SIGINT); 
+
+  
+  // Block sigint and save current signal mask
+  if (sigprocmask(SIG_BLOCK, &newset, &oldset) < 0)
+    printf("SignalProc Error...");
+
+  printf("Critical section\n");
+
+  if (sigsuspend(&waitset) != -1)
+    printf("Sus error"); 
+
+  printf("After suspending...\n");
+  
+  if(sigprocmask(SIG_SETMASK, &oldset, NULL) < 0 )
+    printf("sigsetmask  error"); 
+
+  
+  printf("Exit\n");
+  exit(0);
 }
 
 
 // signal needs handler..
-void handler(int signo){
-  prinf("Handler....");
-
+static void handler(int signo){
+  printf("\nHandler for signal number: %i....\n",signo);
 }
 
