@@ -3,4 +3,11 @@
 
 -New projects weekly
 
+# TODO #
+
+- Better Documentation
+
+- Better output?
+
+
 
