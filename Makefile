@@ -22,6 +22,10 @@ homework7:
 	cc -o hw7.o homework7.c
 homework8:
 	gcc -pthread -o hw8.o homework8.c
+threads:
+	gcc -pthread -g -o threads.o threads.c
+daemon:
+	gcc -pthread -g -o timed.o daemon.c
 
 dohomework:
 	make homework6
