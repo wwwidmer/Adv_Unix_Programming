@@ -1,16 +1,10 @@
-/*
-Write a user daemon that ouputs the current time every 10 secondsinto a log file at teh same directory. 
-Then change the configuration file to output elsewhere. 
-Have the configuration file redirect the log file to this place.
-Send the daemon a signal telling it that the cconfiguration file was changed. 
-Forcing it to reread and start ending log messages to the new location.
- */
-
-/*
- * output time
- * check timed.conf at startup
- * recieve signal that timed.conf has changed. 
- *
+/* 2015
+ * DAEMON.C
+ * WILLIAM WIDMER
+ * ASSIGNMENT
+ * CREATE AN EXAMPLE DAEMON PROCESS WHOSE PURPOSE IS TO OUTPUT
+ * THE CURRENT (FORMATTED) TIME INTO A TEXT FILE.
+ * DAEMON SHOULD READ A CONF FILE TO DETERMINE THE OUTPUT FILE.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +23,15 @@ char line[128];
 char timebuffer[26];
 const char* conf = "timed.conf";
 
+/* 
+ * IO functions
+ *
+ * formatTime
+ * Format a time to be human readable.
+ *
+ * reread
+ * read the file conf, determine logfile used elsewhere.
+ */
 int formatTime();
 
 void reread(void){
@@ -39,15 +42,22 @@ void reread(void){
   if (rr == NULL){
     exit(1);
   }
+  // memmove away from config variable name
   while(fgets(line,sizeof(line),rr)!= NULL){
     memmove(line,line+10, strlen(line));
   }
+  // Tell user the first output file.
+  // Since we're a daemon printf won't go anywhere after we daemonize.
   printf("%s",line);
   logfile = (char *)line;
+  // config variables contain eol or eof, null it.
   logfile[strlen(logfile)-1] = '\0';
   fclose(rr);
 }
-
+/*
+ * Thread to catch SIGHUP
+ * To call reread.
+ */
 void * thr_fun(void *arg){
   int err, signo;
 
@@ -73,7 +83,11 @@ void * thr_fun(void *arg){
 
 
 }
-
+/*
+ * main
+ * initialing read conf file, daemonize, error catch, and
+ * call necessary functions.
+ */
 int main(int argc, char* argv[]){
   int err;
   pid_t process_id = 0;
@@ -119,7 +133,10 @@ int main(int argc, char* argv[]){
   return 0;
 }
  
-
+/*
+ * clocker
+ * Write to logfile the current time.
+ */
 int clocker(){
   FILE *fp;
   while(1){
@@ -133,7 +150,7 @@ int clocker(){
   fclose(fp);
   return 0;
 }
-
+// Format a Y m D H M S time struct into a string.
 int formatTime(){
   time_t timer;
   struct tm* tm_i;

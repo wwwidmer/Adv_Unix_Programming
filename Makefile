@@ -30,9 +30,9 @@ daemon:
 dohomework:
 	make homework6
 test:
-	./myhier.o ../projects
+	echo emptytests
 
 clean:
-	rm $(RM) *.o *~ *.gch "foo" "bar"
+	$(RM) *.o *~ *.gch "foo" "bar"
 
 

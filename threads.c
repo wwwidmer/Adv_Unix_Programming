@@ -1,16 +1,10 @@
-/* write a program that starts two threads writing nto the same text file. 
-The threads should be each reading book records from the command line and populating the text file with them.
-Have each thread accumulate the records from the command line into an array of strings. thread specific data. 
-Both threads should independently update the array of strings with their input.
-By using the thread data the final array of strings should be consistent and should contain complete entires from both threads. 
- */
-
-/* char*[] records = getrecords
- * "book1 book2 book3"
- * return [book1,book2,book3...]
- * split records in half, thread1, thread2
- * thrds - write
- *
+/* 2015
+ * THREADS.C
+ * WILLIAM WIDMER
+ * ASSIGNMENT
+ * CREATE A PROGRAM TO TAKE INPUT AND RELEASE THAT DATA TO TWO THREADS.
+ * HAVE THOSE THREADS WRITE TO THE SAME FILE AND DEMONSTRATE
+ * A TYPE OF LOCK SO THE WRITES DO NOT CONFLICT.
  */
 
 #include <pthread.h>
@@ -20,12 +14,13 @@ By using the thread data the final array of strings should be consistent and sho
 #include <fcntl.h>
 #include <string.h>
 
+// Thread implementation variables
 pthread_t tid1, tid2;
 pthread_mutex_t lock;
 static pthread_key_t *key;
-char* books[25];
+// Data used by both threads
 static char* booklog = "books.txt";
-
+char* books[25];
 
 void *start_rtn1(void *arg);
 void *start_rtn2(void *arg);
@@ -33,6 +28,16 @@ void thread_init1(void);
 void thread_init2(void);
 void destructor(void *k);
 
+/* 
+ * Methods to handle input.
+ *
+ * isEmpty
+ * Is the c string a space or null
+ *
+ * getInput
+ * Continue to receive strings from command line until a space.
+ * Add to books, an array, at the first non null position.
+ */
 int isEmpty(const char *line){
   while(*line != '\0'){
     if (isspace(*line) == 0){
@@ -59,13 +64,17 @@ int getInput(){
   return 0;
 }
 
-
+/*
+ * main 
+ * Set up threads and initially prompt user for input.
+ * Hand out keys, allocate memory, init mutex, and create threads
+ */
 int main(int argc, char* argv[]){
   int err1, err2;
   key = malloc(sizeof(pthread_key_t));
   printf("Enter records by line\n");
-  printf("=================================\n");
-  //getInput();
+  printf("=====================\n");
+  getInput();
 
   if(pthread_mutex_init(&lock, NULL) != 0){
       printf("Could not create mutex\n");
@@ -91,10 +100,15 @@ int main(int argc, char* argv[]){
   pthread_mutex_destroy(&lock);
   return 0;
 }
-
+/*
+ * Threads
+ * Lock the mutex so other thread cannot work in file.
+ * Open file, write this threads half of data as an append.
+ * Close file, unlock mutex, exit thread.
+ */
 void *start_rtn1(void *arg){
   pthread_mutex_lock(&lock);
-  getInput();
+
   printf("Thread 1...\n");
 
   FILE* fd;
@@ -115,7 +129,7 @@ void *start_rtn1(void *arg){
 
 void *start_rtn2(void *arg){
   pthread_mutex_lock(&lock);
-  getInput();
+
   printf("Thread 2...\n");
 
   FILE* fd;
@@ -126,7 +140,7 @@ void *start_rtn2(void *arg){
     if(books[i] != NULL){
       char * l = books[i];
       l[strlen(l)-1] = '\0';
-      fprintf(fd,"%s\n",l);
+      fprintf(fd,"%s",l);
     }
   }
   fflush(fd);
