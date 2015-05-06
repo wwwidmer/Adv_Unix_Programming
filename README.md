@@ -5,9 +5,12 @@
 
 # TODO #
 
-- Better Documentation
+- One or two more assignments left. (Prof hasn't decided on how to end the class)
 
-- Better output?
+- Almost done with the semester. Planning on reviewing the code and adding more functional comments to them when I have some free time this summer.
+
+
+
 
 
 
